@@ -33,10 +33,48 @@ def fringe_2d_to_1d(n,m):
     return int(j)
 
 def noll_1d_to_2d(j):
-    pass
+    '''
+    Given a Noll index (j >= 1), return the (n,m) pair.
+    
+    The treatment here closely follows Robert Gray's ZernikeCalc.m
+    '''
+    
+    assert j > 0, 'j must be > 0! (Piston is j=1)'
+    
+    # Find n
+    n = int(np.ceil( (-1 + np.sqrt(1 + 8 * j)) / 2 - 1 ))
+    
+    # Find sign of m
+    if is_even(j):
+        sign = -1
+    else:
+        sign = 1
+        
+    # Find m
+    k = (n + 1) * (n + 2) / 2.
+    m = sign * int(n - 2 * np.floor((k - j) / 2. ) )
+    
+    return n, m
 
 def noll_2d_to_1d(n,m):
-    pass
+    '''
+    Given an (n,m) pair, return the corresponding
+    Noll index.
+    '''
+    _nm_validation(n,m)
+    
+    j0 = n * (n + 1.) / 2. + 1
+    
+    if is_even(j0 + n):
+        sign = -1
+    else:
+        sign = 1
+        
+    # There has to be a more elegant way to do this
+    mvals = np.arange(-n,n+1,2)
+    morder = np.lexsort((sign * np.sign(mvals), np.abs(mvals)))
+    
+    return j0 + list(mvals[morder]).index(m)
 
 def classical_nm_to_Wyant(n,m):
     '''
@@ -79,4 +117,14 @@ def _check_fringe(nterms=36):
     for j in range(1,nterms+1):
         n, m = fringe_1d_to_2d(j)
         foundj = fringe_2d_to_1d(n, m)
+        assert j == foundj, 'Fringe indices don\'t match at j={} (found j={})'.format(j,foundj)
+
+def _check_noll(nterms=36):
+    '''
+    Check that noll_2d_to_1d and noll_1d_to_2d
+    are consistent.
+    '''
+    for j in range(1,nterms+1):
+        n, m = noll_1d_to_2d(j)
+        foundj = noll_2d_to_1d(n, m)
         assert j == foundj, 'Fringe indices don\'t match at j={} (found j={})'.format(j,foundj)

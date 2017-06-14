@@ -95,11 +95,11 @@ def classical_nm_to_Wyant(n,m):
         azimuthal = None
     return nprime, abs(m), azimuthal
 
-def noll_to_fringe_normalization(n,m):
-    pass
-
-def fringe_to_noll_normalization(n,m):
-    pass
+def noll_normalization(n,m):
+    if m == 0:
+        return np.sqrt(n + 1)
+    else:
+        return np.sqrt(2 * (n + 1))
 
 def is_even(x):
     return x % 2 != 0

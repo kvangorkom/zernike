@@ -127,4 +127,4 @@ def _check_noll(nterms=36):
     for j in range(1,nterms+1):
         n, m = noll_1d_to_2d(j)
         foundj = noll_2d_to_1d(n, m)
-        assert j == foundj, 'Fringe indices don\'t match at j={} (found j={})'.format(j,foundj)
+        assert j == foundj, 'Noll indices don\'t match at j={} (found j={})'.format(j,foundj)
